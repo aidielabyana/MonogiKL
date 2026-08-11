@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Bag — MANOGI · KL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0b10'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23e3aec4' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body data-page="cart.html">
+
+<header id="site-header"></header>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:0.8rem;">Your Bag</p>
+    <div id="cart-root"></div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/layout.js"></script>
+<script>
+  function renderCartPage() {
+    const lines = cartLines();
+    const root = document.getElementById("cart-root");
+
+    if (!lines.length) {
+      root.innerHTML =
+        '<div class="empty-state">' +
+        "<h2>Your bag is quiet.</h2>" +
+        '<p class="muted" style="margin-bottom:1.8rem;">Nothing added yet — the collection is short, but it doesn\'t bite.</p>' +
+        '<a href="index.html#shop" class="btn btn--primary">Shop the collection</a>' +
+        "</div>";
+      return;
+    }
+
+    const linesHtml = lines
+      .map(
+        (l) =>
+          '<div class="cart-line reveal" data-line="' + l.id + '">' +
+          '<div class="cart-line__thumb">' + bottleHTML(l.product) + "</div>" +
+          "<div>" +
+          '<div class="cart-line__name">' + l.product.name + "</div>" +
+          '<div class="cart-line__meta">' + formatPrice(l.product.price) + " each &middot; 50ml</div>" +
+          '<button type="button" class="cart-line__remove" data-remove="' + l.id + '">Remove</button>' +
+          "</div>" +
+          '<div class="qty-stepper">' +
+          '<button type="button" data-minus="' + l.id + '" aria-label="Decrease quantity">&minus;</button>' +
+          '<input type="text" inputmode="numeric" readonly value="' + l.qty + '" />' +
+          '<button type="button" data-plus="' + l.id + '" aria-label="Increase quantity">+</button>' +
+          "</div>" +
+          '<div class="cart-line__price">' + formatPrice(l.product.price * l.qty) + "</div>" +
+          "</div>"
+      )
+      .join("");
+
+    const subtotal = cartSubtotal();
+    const shipping = subtotal > 0 ? (subtotal >= 250 ? 0 : 12) : 0;
+
+    root.innerHTML =
+      '<div class="cart-layout">' +
+      "<div>" + linesHtml + "</div>" +
+      '<div class="summary-card reveal">' +
+      "<h3>Order Summary</h3>" +
+      '<div class="summary-row"><span>Subtotal</span><span class="num" id="sum-subtotal">' + formatPrice(subtotal) + "</span></div>" +
+      '<div class="summary-row"><span>Shipping</span><span class="num" id="sum-shipping">' + (shipping === 0 ? "Free" : formatPrice(shipping)) + "</span></div>" +
+      '<div class="summary-row total"><span>Total</span><span class="num" id="sum-total">' + formatPrice(subtotal + shipping) + "</span></div>" +
+      '<div class="promo-row"><input type="text" placeholder="Promo code" /><button class="btn btn--ghost">Apply</button></div>' +
+      '<a href="checkout.html" class="btn btn--primary btn--block" style="margin-bottom:0.8rem;">Checkout</a>' +
+      '<a class="btn btn--whatsapp btn--block" id="cart-whatsapp" target="_blank" rel="noopener">Order via WhatsApp</a>' +
+      "</div></div>";
+
+    document.getElementById("cart-whatsapp").href = waLink(waOrderMessage());
+    requestAnimationFrame(() => {
+      root.querySelectorAll(".reveal").forEach((el, i) => {
+        setTimeout(() => el.classList.add("is-revealed"), i * 60);
+      });
+    });
+  }
+
+  document.getElementById("cart-root").addEventListener("click", function (e) {
+    const minus = e.target.closest("[data-minus]");
+    const plus = e.target.closest("[data-plus]");
+    const remove = e.target.closest("[data-remove]");
+
+    if (minus) {
+      const line = getCart().find((l) => l.id === minus.dataset.minus);
+      if (line) setQty(line.id, Math.max(1, line.qty - 1));
+    } else if (plus) {
+      const line = getCart().find((l) => l.id === plus.dataset.plus);
+      if (line) setQty(line.id, line.qty + 1);
+    } else if (remove) {
+      removeFromCart(remove.dataset.remove);
+    } else {
+      return;
+    }
+
+    renderCartPage();
+  });
+
+  renderCartPage();
+</script>
+</body>
+</html>

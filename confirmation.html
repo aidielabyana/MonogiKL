@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Order Confirmed — MANOGI · KL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0b10'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23e3aec4' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body data-page="confirmation.html">
+
+<header id="site-header"></header>
+
+<section class="section">
+  <div class="wrap" id="confirm-root"></div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/layout.js"></script>
+<script>
+  const root = document.getElementById("confirm-root");
+  let order = null;
+  try {
+    order = JSON.parse(localStorage.getItem("manogi_last_order"));
+  } catch (e) {}
+
+  const payLabels = { card: "Credit / Debit Card", fpx: "Online Banking (FPX)", cod: "Cash on Delivery" };
+
+  if (!order) {
+    root.innerHTML =
+      '<div class="empty-state">' +
+      "<h2>No recent order.</h2>" +
+      '<p class="muted" style="margin-bottom:1.8rem;">Place an order and it will appear here.</p>' +
+      '<a href="index.html#shop" class="btn btn--primary">Shop the collection</a>' +
+      "</div>";
+  } else {
+    root.innerHTML =
+      '<div class="confirm-box">' +
+      '<div class="confirm-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e3aec4" stroke-width="1.6"><path d="M5 13l4 4L19 7"/></svg></div>' +
+      '<p class="eyebrow">Order Placed</p>' +
+      '<h1 style="font-style:italic; font-size:clamp(1.8rem,3.4vw,2.4rem); margin:0.6rem 0;">Thank you.</h1>' +
+      '<p class="muted">We\'re preparing your fragrance for the road to Kuala Lumpur and beyond.</p>' +
+      '<div class="order-id">' + order.id + "</div>" +
+      '<div class="summary-card" style="text-align:left; margin-bottom:2rem;">' +
+      '<div class="summary-row"><span>Items</span><span class="num">' + order.count + "</span></div>" +
+      '<div class="summary-row"><span>Payment method</span><span>' + (payLabels[order.pay] || order.pay) + "</span></div>" +
+      '<div class="summary-row total"><span>Total paid</span><span class="num">' + formatPrice(order.total) + "</span></div>" +
+      "</div>" +
+      '<div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">' +
+      '<a href="index.html#shop" class="btn btn--ghost">Continue Shopping</a>' +
+      '<a href="' + waLink("Hi MANOGI·KL, I just placed order " + order.id + " and have a question.") + '" target="_blank" rel="noopener" class="btn btn--whatsapp">Chat about this order</a>' +
+      "</div>" +
+      "</div>";
+  }
+</script>
+</body>
+</html>

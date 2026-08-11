@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MANOGI · KL — Fragrance for the quiet hours</title>
+<meta name="description" content="Niche fragrance out of Kuala Lumpur. Small batches, worn close, kept quiet." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0b10'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23e3aec4' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body data-page="index.html" id="top">
+
+<header id="site-header"></header>
+
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <p class="eyebrow">Niche Perfumery &middot; Kuala Lumpur</p>
+      <h1>Fragrance for<br />the quiet hours.</h1>
+      <p class="lede">Three scents, held close. MANOGI&middot;KL is made in small batches for the moments you don't explain — worn low, remembered anyway.</p>
+      <div class="hero__actions">
+        <a href="#shop" class="btn btn--primary">Shop the collection</a>
+        <a href="#product-crave" class="btn btn--ghost">Discover Crave</a>
+      </div>
+    </div>
+    <a class="hero-photo" href="#product-crave">
+      <img src="assets/img/crave-slate.jpg" alt="Crave eau de parfum resting on dark slate with eucalyptus" />
+      <span class="hero-photo__tag">Crave &middot; Eau de Parfum</span>
+    </a>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <hr class="hairline" />
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow" style="margin-bottom:0.7rem;">Full Collection</p>
+        <h2>Three scents. No noise.</h2>
+      </div>
+    </div>
+    <div class="tile-grid" id="shop-teaser"></div>
+
+    <div id="shop-detail" style="margin-top: clamp(3rem, 8vw, 5.5rem);"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap story reveal">
+    <div>
+      <p class="eyebrow" style="margin-bottom:0.9rem;">The House</p>
+      <h2 style="font-style:italic; font-size:clamp(1.8rem,3vw,2.4rem);">Made to be<br />half-remembered.</h2>
+      <div class="story-photo">
+        <img src="assets/img/crave-white.jpg" alt="Crave eau de parfum bottle on a plain white ground" />
+      </div>
+    </div>
+    <blockquote>
+      &ldquo;We don't design scents to announce a room. We design them for the two seconds after someone
+      has already left it — the trace that stays on a scarf, a collar, a pillow.&rdquo;
+      <cite>MANOGI&middot;KL, Founding Note</cite>
+    </blockquote>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="pd-grid reveal-stagger" style="align-items:center;">
+      <div>
+        <p class="eyebrow" style="margin-bottom:0.8rem;">Get in Touch</p>
+        <h2 style="font-family:var(--serif); font-weight:500; font-style:italic; font-size:clamp(2rem,4vw,2.8rem); margin-bottom:1.2rem;">We answer <br />on WhatsApp first.</h2>
+        <p class="pd-desc">Questions about a scent, an order, or a gift — the fastest way to reach us is WhatsApp. We're based in Kuala Lumpur and reply within the day.</p>
+
+        <div style="display:flex; flex-direction:column; gap:1rem; margin:2rem 0;">
+          <a id="contact-whatsapp" class="btn btn--whatsapp" target="_blank" rel="noopener" style="width:fit-content;">Message us on WhatsApp</a>
+          <a href="mailto:hello@manogi.kl" class="muted" style="font-size:0.95rem;">hello@manogi.kl</a>
+          <span class="muted" style="font-size:0.95rem;">Kuala Lumpur, Malaysia &middot; by appointment</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Send a note</h3>
+        <form id="contact-form">
+          <div class="field"><label for="c-name">Name</label><input type="text" id="c-name" placeholder="Your name" required /></div>
+          <div class="field"><label for="c-email">Email</label><input type="email" id="c-email" placeholder="you@email.com" required /></div>
+          <div class="field"><label for="c-message">Message</label><textarea id="c-message" placeholder="How can we help?" required></textarea></div>
+          <button type="submit" class="btn btn--primary btn--block">Continue on WhatsApp</button>
+          <p class="muted" style="font-size:0.76rem; text-align:center; margin-top:0.8rem;">We'll open WhatsApp with your message pre-filled — nothing is sent from this form directly.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/shop.js"></script>
+<script>
+  document.getElementById("contact-whatsapp").href = waLink("Hi MANOGI·KL, I'd like to get in touch.");
+
+  document.getElementById("contact-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("c-name").value;
+    const message = document.getElementById("c-message").value;
+    window.open(waLink("Hi MANOGI·KL, I'm " + name + ". " + message), "_blank", "noopener");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout — MANOGI · KL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0b10'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-style='italic' font-size='19' fill='%23e3aec4' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body data-page="checkout.html">
+
+<header id="site-header"></header>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:0.8rem;">Checkout</p>
+    <div id="checkout-root"></div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/catalog.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/layout.js"></script>
+<script>
+  const root = document.getElementById("checkout-root");
+  const lines = cartLines();
+
+  if (!lines.length) {
+    root.innerHTML =
+      '<div class="empty-state">' +
+      "<h2>Nothing to check out.</h2>" +
+      '<p class="muted" style="margin-bottom:1.8rem;">Your bag is empty — add a fragrance before checking out.</p>' +
+      '<a href="index.html#shop" class="btn btn--primary">Shop the collection</a>' +
+      "</div>";
+  } else {
+    const subtotal = cartSubtotal();
+    const shipping = subtotal >= 250 ? 0 : 12;
+    const total = subtotal + shipping;
+
+    root.innerHTML =
+      '<div class="checkout-layout reveal-stagger">' +
+      '<form id="checkout-form">' +
+
+      '<fieldset><legend>Contact</legend>' +
+      '<div style="padding:1.2rem;">' +
+      '<div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@email.com" required /></div>' +
+      '<div class="field"><label for="phone">Phone (for WhatsApp updates)</label><input type="tel" id="phone" placeholder="+60 12-345 6789" required /></div>' +
+      "</div></fieldset>" +
+
+      '<fieldset><legend>Shipping Address</legend>' +
+      '<div style="padding:1.2rem;">' +
+      '<div class="field"><label for="name">Full name</label><input type="text" id="name" placeholder="As on delivery" required /></div>' +
+      '<div class="field"><label for="address">Address</label><input type="text" id="address" placeholder="Street, unit, building" required /></div>' +
+      '<div class="field-row">' +
+      '<div class="field"><label for="city">City</label><input type="text" id="city" placeholder="Kuala Lumpur" required /></div>' +
+      '<div class="field"><label for="postcode">Postcode</label><input type="text" id="postcode" placeholder="50000" required /></div>' +
+      "</div>" +
+      '<div class="field"><label for="state">State</label>' +
+      '<select id="state" required>' +
+      '<option value="">Select state</option>' +
+      ["Kuala Lumpur", "Selangor", "Penang", "Johor", "Sabah", "Sarawak", "Perak", "Melaka"]
+        .map((s) => '<option>' + s + "</option>")
+        .join("") +
+      "</select></div>" +
+      "</div></fieldset>" +
+
+      '<fieldset><legend>Payment Method</legend>' +
+      '<label class="pay-option"><input type="radio" name="pay" value="card" checked /><span>Credit / Debit Card</span><span class="pay-note">Visa, Mastercard</span></label>' +
+      '<label class="pay-option"><input type="radio" name="pay" value="fpx" /><span>Online Banking (FPX)</span><span class="pay-note">All major MY banks</span></label>' +
+      '<label class="pay-option"><input type="radio" name="pay" value="cod" /><span>Cash on Delivery</span><span class="pay-note">West Malaysia only</span></label>' +
+      '<label class="pay-option"><input type="radio" name="pay" value="whatsapp" /><span>Order via WhatsApp</span><span class="pay-note">Confirm with us directly</span></label>' +
+      '<div class="card-fields is-visible" id="card-fields">' +
+      '<div class="field"><label for="cc-number">Card number</label><input type="text" id="cc-number" placeholder="4242 4242 4242 4242" /></div>' +
+      '<div class="field-row">' +
+      '<div class="field"><label for="cc-exp">Expiry</label><input type="text" id="cc-exp" placeholder="MM / YY" /></div>' +
+      '<div class="field"><label for="cc-cvc">CVC</label><input type="text" id="cc-cvc" placeholder="123" /></div>' +
+      "</div></div>" +
+      "</fieldset>" +
+
+      '<button type="submit" class="btn btn--primary btn--block" id="place-order">Place Order &middot; ' + formatPrice(total) + "</button>" +
+      '<p class="muted" style="font-size:0.76rem; text-align:center; margin-top:0.9rem;">Demo checkout — no real payment is processed.</p>' +
+      "</form>" +
+
+      '<div class="summary-card">' +
+      "<h3>Order Summary</h3>" +
+      lines
+        .map(
+          (l) =>
+            '<div class="summary-row"><span>' + l.product.name + " &times; " + l.qty + "</span><span class=\"num\">" + formatPrice(l.product.price * l.qty) + "</span></div>"
+        )
+        .join("") +
+      '<hr class="hairline" style="margin:0.9rem 0;" />' +
+      '<div class="summary-row"><span>Subtotal</span><span class="num">' + formatPrice(subtotal) + "</span></div>" +
+      '<div class="summary-row"><span>Shipping</span><span class="num">' + (shipping === 0 ? "Free" : formatPrice(shipping)) + "</span></div>" +
+      '<div class="summary-row total"><span>Total</span><span class="num">' + formatPrice(total) + "</span></div>" +
+      "</div>" +
+      "</div>";
+
+    document.querySelectorAll('input[name="pay"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        document.getElementById("card-fields").classList.toggle("is-visible", radio.value === "card" && radio.checked);
+      });
+    });
+
+    document.getElementById("checkout-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const payMethod = document.querySelector('input[name="pay"]:checked').value;
+      const btn = document.getElementById("place-order");
+
+      if (payMethod === "whatsapp") {
+        window.open(waLink(waOrderMessage()), "_blank", "noopener");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = 'Processing<span class="processing-dots"><span></span><span></span><span></span></span>';
+      setTimeout(() => {
+        const orderId = "MK" + Math.floor(100000 + Math.random() * 900000);
+        localStorage.setItem(
+          "manogi_last_order",
+          JSON.stringify({ id: orderId, total: total, pay: payMethod, count: cartCount() })
+        );
+        clearCart();
+        location.href = "confirmation.html";
+      }, 900);
+    });
+  }
+</script>
+</body>
+</html>
